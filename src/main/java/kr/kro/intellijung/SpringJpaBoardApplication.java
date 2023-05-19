@@ -1,4 +1,4 @@
-package kr.kro.intellijung.springjpaboard;
+package kr.kro.intellijung;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

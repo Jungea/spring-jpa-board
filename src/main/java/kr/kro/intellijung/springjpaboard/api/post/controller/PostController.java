@@ -1,4 +1,4 @@
-package kr.kro.intellijung.springjpaboard.domain.post.controller;
+package kr.kro.intellijung.springjpaboard.api.post.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

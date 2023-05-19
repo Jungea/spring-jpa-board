@@ -1,4 +1,4 @@
-package kr.kro.intellijung.springjpaboard.domain.user.controller;
+package kr.kro.intellijung.springjpaboard.api.user.presentation;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
