@@ -1,19 +1,10 @@
 spring:
   datasource:
-    hikari:
-      jdbc-url: jdbc:h2:tcp://localhost/~/spring-jpa-board
-      driver-class-name: org.h2.Driver
-      username: user1
-      password: test123
-      maximum-pool-size: 5
-      minimum-idle: 1
-      pool-name: hikari
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/users_db?serverTimezone=UTC&characterEncoding=UTF-8
+    username: user1
+    password: test123
 
-
-  h2:
-    console:
-      path: /h2console
-      enabled: true
   jpa:
     hibernate:
       ddl-auto: update
@@ -21,3 +12,19 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+
+#  datasource:
+#    hikari:
+#      jdbc-url: jdbc:h2:tcp://localhost/~/spring-jpa-board
+#      driver-class-name: org.h2.Driver
+#      username: user1
+#      password: test123
+#      maximum-pool-size: 5
+#      minimum-idle: 1
+#      pool-name: hikari
+#
+#  h2:
+#    console:
+#      path: /h2console
+#      enabled: true
