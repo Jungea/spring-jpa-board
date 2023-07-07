@@ -1,0 +1,12 @@
+### 회원가입
+POST localhost:8080/users
+Content-Type: application/json
+
+{
+  "name": "동그라미2",
+  "role": "USER"
+}
+
+
+### 조회
+GET localhost:8080/users
