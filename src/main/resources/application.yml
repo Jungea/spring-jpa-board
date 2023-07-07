@@ -12,8 +12,8 @@ spring:
     hikari:
       jdbc-url: jdbc:h2:tcp://localhost/~/spring-jpa-board
       driver-class-name: org.h2.Driver
-      username: user1
-      password: test123
+      username: sa
+      password:
 
   h2:
     console:
