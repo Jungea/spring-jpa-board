@@ -4,11 +4,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class UserController {
+public class MessageController {
 
-    @GetMapping("mypage")
-    public String mypage() {
-        return "user/mypage";
+    @GetMapping("/messages")
+    public String messages() {
+        return "user/messages";
     }
-
 }
