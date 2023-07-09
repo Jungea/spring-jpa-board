@@ -62,7 +62,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
         http.authorizeHttpRequests(request -> request
-                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/", "/users").permitAll()
                         .requestMatchers("/mypage").hasRole("USER")
                         .requestMatchers("/messages").hasRole("MANAGER")
                         .requestMatchers("/config").hasRole("ADMIN")
