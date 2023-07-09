@@ -1,9 +1,11 @@
 package kr.kro.intellijung.board.security.configs;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -34,13 +36,13 @@ public class SecurityConfig {
         users.add(User.builder()
                 .username("manager")
                 .password(password)
-                .roles("MANAGER")
+                .roles("MANAGER", "USER")
                 .build());
 
         users.add(User.builder()
                 .username("admin")
                 .password(password)
-                .roles("ADMIN")
+                .roles("ADMIN", "USER", "MANAGER")
                 .build());
 
         return new InMemoryUserDetailsManager(users);
@@ -49,6 +51,11 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
     @Bean
