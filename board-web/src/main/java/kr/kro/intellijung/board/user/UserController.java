@@ -40,4 +40,13 @@ public class UserController {
         return "redirect:/";
     }
 
+    /**
+     * 로그인
+     *
+     * @return
+     */
+    @GetMapping("/login")
+    public String login() {
+        return "user/login/login";
+    }
 }
