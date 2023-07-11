@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    private final AuthenticationDetailsSource authenticationDetailsSource;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -43,6 +45,7 @@ public class SecurityConfig {
                 .formLogin(login -> login
                         .loginPage("/login")
                         .loginProcessingUrl("/login_proc")
+                        .authenticationDetailsSource(authenticationDetailsSource)
                         .defaultSuccessUrl("/")
                         .permitAll());
 
