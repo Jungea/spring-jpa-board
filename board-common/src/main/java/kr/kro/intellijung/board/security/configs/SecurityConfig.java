@@ -1,5 +1,6 @@
 package kr.kro.intellijung.board.security.configs;
 
+import kr.kro.intellijung.board.security.handler.CustomAccessDeniedHandler;
 import kr.kro.intellijung.board.security.provider.CustomAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -56,9 +58,18 @@ public class SecurityConfig {
                 .failureHandler(customeAuthenticationFailureHandler)
                 .permitAll());
 
-        http.authenticationProvider(authenticationProvider());
+        http.authenticationProvider(authenticationProvider())
+                .exceptionHandling(handle -> handle
+                        .accessDeniedHandler(accessDeniedHandler()));
 
         return http.build();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        CustomAccessDeniedHandler accessDeniedHandler = new CustomAccessDeniedHandler();
+        accessDeniedHandler.setErrorPage("/denied");
+        return accessDeniedHandler;
     }
 
     @Bean
