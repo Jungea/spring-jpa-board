@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @EnableWebSecurity
 @Configuration
@@ -22,6 +23,7 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final AuthenticationDetailsSource authenticationDetailsSource;
+    private final AuthenticationSuccessHandler customeAuthenticationSuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -37,17 +39,19 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
         http.authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/users").permitAll()
-                        .requestMatchers("/mypage").hasRole("USER")
-                        .requestMatchers("/messages").hasRole("MANAGER")
-                        .requestMatchers("/config").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .formLogin(login -> login
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login_proc")
-                        .authenticationDetailsSource(authenticationDetailsSource)
-                        .defaultSuccessUrl("/")
-                        .permitAll());
+                .requestMatchers("/", "/users").permitAll()
+                .requestMatchers("/mypage").hasRole("USER")
+                .requestMatchers("/messages").hasRole("MANAGER")
+                .requestMatchers("/config").hasRole("ADMIN")
+                .anyRequest().authenticated());
+
+        http.formLogin(login -> login
+                .loginPage("/login")
+                .loginProcessingUrl("/login_proc")
+                .authenticationDetailsSource(authenticationDetailsSource)
+                .defaultSuccessUrl("/")
+                .successHandler(customeAuthenticationSuccessHandler)
+                .permitAll());
 
         http.authenticationProvider(authenticationProvider());
 
