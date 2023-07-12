@@ -1,12 +1,13 @@
 package kr.kro.intellijung.board.security.configs;
 
-import kr.kro.intellijung.board.security.filter.AjaxLoginProcessingFilter;
 import kr.kro.intellijung.board.security.handler.CustomAccessDeniedHandler;
+import kr.kro.intellijung.board.security.provider.AjaxAuthenticationProvider;
 import kr.kro.intellijung.board.security.provider.CustomAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -21,10 +22,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
+@Order(1)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -32,12 +33,7 @@ public class SecurityConfig {
     private final AuthenticationDetailsSource authenticationDetailsSource;
     private final AuthenticationSuccessHandler customeAuthenticationSuccessHandler;
     private final AuthenticationFailureHandler customeAuthenticationFailureHandler;
-    private final AuthenticationConfiguration authenticationConfiguration;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -45,12 +41,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+    public SecurityFilterChain securityFilterChainA(HttpSecurity http)
             throws Exception {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers("/", "/users", "/login*").permitAll()
@@ -72,10 +63,6 @@ public class SecurityConfig {
                 .exceptionHandling(handle -> handle
                         .accessDeniedHandler(accessDeniedHandler()));
 
-        http.addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        http.csrf(csrf -> csrf.disable());
-
         return http.build();
     }
 
@@ -88,13 +75,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        return new CustomAuthenticationProvider(userDetailsService, passwordEncoder());
+        return new AjaxAuthenticationProvider(userDetailsService, passwordEncoder);
     }
 
-    @Bean
-    public AjaxLoginProcessingFilter ajaxLoginProcessingFilter() throws Exception {
-        AjaxLoginProcessingFilter ajaxLoginProcessingFilter = new AjaxLoginProcessingFilter();
-        ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
-        return ajaxLoginProcessingFilter;
-    }
 }
