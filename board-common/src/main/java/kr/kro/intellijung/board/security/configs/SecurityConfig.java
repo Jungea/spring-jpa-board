@@ -1,7 +1,6 @@
 package kr.kro.intellijung.board.security.configs;
 
 import kr.kro.intellijung.board.security.handler.CustomAccessDeniedHandler;
-import kr.kro.intellijung.board.security.provider.AjaxAuthenticationProvider;
 import kr.kro.intellijung.board.security.provider.CustomAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -9,14 +8,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -59,7 +55,7 @@ public class SecurityConfig {
                 .failureHandler(customeAuthenticationFailureHandler)
                 .permitAll());
 
-        http.authenticationProvider(authenticationProvider())
+        http.authenticationProvider(customAuthenticationProvider())
                 .exceptionHandling(handle -> handle
                         .accessDeniedHandler(accessDeniedHandler()));
 
@@ -74,8 +70,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        return new AjaxAuthenticationProvider(userDetailsService, passwordEncoder);
+    public AuthenticationProvider customAuthenticationProvider() {
+        return new CustomAuthenticationProvider(userDetailsService, passwordEncoder);
     }
 
 }
