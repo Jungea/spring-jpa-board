@@ -1,6 +1,8 @@
 package kr.kro.intellijung.board.security.configs;
 
 import kr.kro.intellijung.board.security.filter.AjaxLoginProcessingFilter;
+import kr.kro.intellijung.board.security.handler.AjaxAuthenticationFailureHandler;
+import kr.kro.intellijung.board.security.handler.AjaxAuthenticationSuccessHandler;
 import kr.kro.intellijung.board.security.provider.AjaxAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +18,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity(debug = true)
@@ -58,9 +62,21 @@ public class AjaxSecurityConfig {
     }
 
     @Bean
+    public AuthenticationSuccessHandler ajaxAuthenticationSuccessHandler(){
+        return new AjaxAuthenticationSuccessHandler();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler ajaxAuthenticationFailureHandler(){
+        return new AjaxAuthenticationFailureHandler();
+    }
+
+    @Bean
     public AjaxLoginProcessingFilter ajaxLoginProcessingFilter() throws Exception {
         AjaxLoginProcessingFilter ajaxLoginProcessingFilter = new AjaxLoginProcessingFilter();
         ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
+        ajaxLoginProcessingFilter.setAuthenticationSuccessHandler(ajaxAuthenticationSuccessHandler());
+        ajaxLoginProcessingFilter.setAuthenticationFailureHandler(ajaxAuthenticationFailureHandler());
         return ajaxLoginProcessingFilter;
     }
 

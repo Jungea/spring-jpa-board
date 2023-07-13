@@ -1,6 +1,6 @@
 package kr.kro.intellijung.board.security.configs;
 
-import kr.kro.intellijung.board.security.handler.CustomAccessDeniedHandler;
+import kr.kro.intellijung.board.security.handler.*;
 import kr.kro.intellijung.board.security.provider.CustomAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -27,8 +27,6 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final AuthenticationDetailsSource authenticationDetailsSource;
-    private final AuthenticationSuccessHandler customeAuthenticationSuccessHandler;
-    private final AuthenticationFailureHandler customeAuthenticationFailureHandler;
     private final PasswordEncoder passwordEncoder;
 
     @Bean
@@ -51,8 +49,8 @@ public class SecurityConfig {
                 .loginProcessingUrl("/login_proc")
                 .authenticationDetailsSource(authenticationDetailsSource)
                 .defaultSuccessUrl("/")
-                .successHandler(customeAuthenticationSuccessHandler)
-                .failureHandler(customeAuthenticationFailureHandler)
+                .successHandler(customeAuthenticationSuccessHandler())
+                .failureHandler(customeAuthenticationFailureHandler())
                 .permitAll());
 
         http.authenticationProvider(customAuthenticationProvider())
@@ -60,6 +58,16 @@ public class SecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler()));
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler customeAuthenticationSuccessHandler(){
+        return new CustomAuthenticationSuccessHandler();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler customeAuthenticationFailureHandler(){
+        return new CustomAuthenticationFailureHandler();
     }
 
     @Bean

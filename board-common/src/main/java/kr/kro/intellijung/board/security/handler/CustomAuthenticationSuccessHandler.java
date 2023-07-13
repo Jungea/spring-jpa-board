@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Component
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private RequestCache requestCache = new HttpSessionRequestCache();
