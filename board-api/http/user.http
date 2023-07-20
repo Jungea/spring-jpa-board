@@ -1,5 +1,5 @@
 ### 회원가입
-POST localhost:8080/users
+POST localhost:8080/api/users
 Content-Type: application/json
 
 {
@@ -9,10 +9,10 @@ Content-Type: application/json
 
 
 ### 조회
-GET localhost:8080/users
+GET localhost:8080/api/users
 
 
-### 로그인
+### 로그인 USER
 POST http://localhost:8080/api/login
 Content-Type: application/json
 X-Requested-With: XMLHttpRequest
@@ -22,7 +22,8 @@ X-Requested-With: XMLHttpRequest
   "password": "1111"
 }
 
-### 로그인
+
+### 로그인 MANAGER
 POST http://localhost:8080/api/login
 Content-Type: application/json
 X-Requested-With: XMLHttpRequest
@@ -32,7 +33,8 @@ X-Requested-With: XMLHttpRequest
   "password": "1111"
 }
 
-### 로그인
+
+### 메세지
 GET http://localhost:8080/api/messages
 Content-Type: application/json
 X-Requested-With: XMLHttpRequest

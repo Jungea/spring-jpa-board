@@ -1,7 +1,8 @@
 package kr.kro.intellijung.board.security.configs;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import kr.kro.intellijung.board.security.common.AjaxLoginAuthenticationEntryPoint;
-import kr.kro.intellijung.board.security.filter.AjaxLoginProcessingFilter;
 import kr.kro.intellijung.board.security.handler.AjaxAccessDeniedHandler;
 import kr.kro.intellijung.board.security.handler.AjaxAuthenticationFailureHandler;
 import kr.kro.intellijung.board.security.handler.AjaxAuthenticationSuccessHandler;
@@ -12,8 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,7 +22,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity(debug = true)
 @Configuration
@@ -34,17 +32,12 @@ public class AjaxSecurityConfig {
     private final UserDetailsService userDetailsService;
 
     @Bean
-    public AuthenticationProvider ajaxAuthenticationProvider() {
-        return new AjaxAuthenticationProvider(userDetailsService, passwordEncoder());
-    }
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+    public SecurityFilterChain ajaxSecurityFilterChain(HttpSecurity http)
         throws Exception {
         http
             .csrf(csrf -> csrf.disable())
@@ -55,7 +48,8 @@ public class AjaxSecurityConfig {
             .authenticationProvider(ajaxAuthenticationProvider())
             .exceptionHandling(handle -> handle
                 .authenticationEntryPoint(new AjaxLoginAuthenticationEntryPoint())
-                .accessDeniedHandler(ajaxAccessDeniedHandler()));
+                .accessDeniedHandler(ajaxAccessDeniedHandler()))
+            .httpBasic(withDefaults());
 
         customConfigurerAjax(http);
 
@@ -70,7 +64,12 @@ public class AjaxSecurityConfig {
             .successHandlerAjax(ajaxAuthenticationSuccessHandler())
             .failureHandlerAjax(ajaxAuthenticationFailureHandler())
             .setAuthenticationManager(authenticationManager)
-            .loginProcessingUrl("/api/users/login");
+            .loginProcessingUrl("/api/login");
+    }
+
+    @Bean
+    public AuthenticationProvider ajaxAuthenticationProvider() {
+        return new AjaxAuthenticationProvider(userDetailsService, passwordEncoder());
     }
 
     @Bean
