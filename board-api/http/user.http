@@ -29,7 +29,7 @@ Content-Type: application/json
 X-Requested-With: XMLHttpRequest
 
 {
-  "username": "manager1",
+  "username": "manager",
   "password": "1111"
 }
 

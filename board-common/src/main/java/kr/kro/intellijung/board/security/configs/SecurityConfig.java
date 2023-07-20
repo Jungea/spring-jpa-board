@@ -22,6 +22,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 @EnableWebSecurity
 @Configuration
@@ -43,15 +44,14 @@ public class SecurityConfig {
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http)
         throws Exception {
         http
-            .securityMatcher(regexMatcher(" ^(?!/api).*$"))
+            .securityMatcher(regexMatcher("^(?!/api).*$"))
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/", "/users", "/login*").permitAll()
+//                .requestMatchers("/", "/users", "/login*").permitAll()
                 .requestMatchers("/mypage").hasRole("USER")
                 .requestMatchers("/messages").hasRole("MANAGER")
                 .requestMatchers("/config").hasRole("ADMIN")
-                .anyRequest().authenticated());
-
-        http
+                .requestMatchers("/**").permitAll()
+                .anyRequest().authenticated())
             .formLogin(login -> login
                 .loginPage("/login")
                 .loginProcessingUrl("/login_proc")
@@ -59,10 +59,10 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/")
                 .successHandler(customAuthenticationSuccessHandler())
                 .failureHandler(customAuthenticationFailureHandler())
-                .permitAll());
-
-        http.authenticationProvider(customAuthenticationProvider())
+                .permitAll())
+            .authenticationProvider(customAuthenticationProvider())
             .exceptionHandling(handle -> handle
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
                 .accessDeniedHandler(customAccessDeniedHandler()));
 
         return http.build();
